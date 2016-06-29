@@ -34,8 +34,8 @@ public class IRC_Client {
             .listenException(warning)
             .serverHost("irc.twitch.tv")
             .serverPort(port)
-            .serverPassword("oauth:3r2hw2esx1vkz2re2rhmqd00licfs9")
-            .nick("redservant")
+            .serverPassword("oauth:[code]")
+            .nick("name")
             .secure(false)
             .build();
         //client.getEventManager().registerEventListener(new eventListener());
@@ -86,8 +86,8 @@ public class IRC_Client {
             .listenException(warning)
             .serverHost("irc.twitch.tv")
             .serverPort(6667)
-            .serverPassword("oauth:3r2hw2esx1vkz2re2rhmqd00licfs9")
-            .nick("redservant")
+            .serverPassword("oauth:[code]")
+            .nick("name")
             .secure(false)
             .build();
         client.getEventManager().registerEventListener(new eventListener());
