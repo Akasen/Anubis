@@ -24,7 +24,7 @@ func (bot *Bot) CmdInterpreter(username string, usermessage string) {
 	}
 
 	if strings.HasPrefix(message, "!help") {
-		bot.Message("For help on the bot please go to http://commandanddemand.com/bot.html")
+		bot.Message("For help, please make the bot.")
 	} else if strings.HasPrefix(message, "!quote") {
 		bot.Message(bot.getQuote())
 	} else if strings.HasPrefix(message, "!addquote ") {
@@ -66,7 +66,7 @@ func (bot *Bot) CmdInterpreter(username string, usermessage string) {
 	}
 }
 
-// Website stuff
+// Begin website section 
 func webTitle(website string) string {
 	response, err := http.Get(website)
 	if err != nil {
@@ -96,17 +96,18 @@ func isWebsite(website string) bool {
 	return false
 }
 
-//End website stuff
+// End website section 
 
-//Mod stuff
+// Begin mod section
 func (bot *Bot) isMod(username string) bool {
 	temp := strings.Replace(bot.channel, "#", "", 1)
-	if bot.mods[username] == true || temp == username || username == "vaultpls" {
+	if bot.mods[username] == true || temp == username { 
 		return true
 	}
 	return false
 }
 
+// If user is mod, timeout user and display the given reasoning
 func (bot *Bot) timeout(username string, reason string) {
 	if bot.isMod(username) {
 		return
@@ -115,6 +116,7 @@ func (bot *Bot) timeout(username string, reason string) {
 	bot.Message(username + " was timed out(" + reason + ")!")
 }
 
+// If user is mod, ban user and display the given reasoning 
 func (bot *Bot) ban(username string, reason string) {
 	if bot.isMod(username) {
 		return
@@ -123,4 +125,4 @@ func (bot *Bot) ban(username string, reason string) {
 	bot.Message(username + " was banned(" + reason + ")!")
 }
 
-//End mod stuff
+// End mod section 

@@ -30,17 +30,18 @@ type Bot struct {
 	userMaxLastMsg int
 }
 
+// Setup your custom bot information here
 func NewBot() *Bot {
 	return &Bot{
 		server:         "irc.chat.twitch.tv",
 		port:           "80",
-		nick:           "Larke12", //Change to your Twitch username
-		channel:        "#akasen1226",  //Change to your channel
+		nick:           "Larke12",			// Change to your Twitch username
+		channel:        "#akasen1226",			// Change to your channel
 		autoMSG1:       "Please follow if you like the stream!  Type !help to see my commands",
-		autoMSG1Count:  10,
-		autoMSG2:       "Fook yeah.  Follow dis gouy.",
-		autoMSG2Count:  50,
-		conn:           nil, //Don't change this
+		autoMSG1Count:  10,				// Time until post
+		autoMSG2:       "Fook yeah.  Follow dis gouy, eh.",
+		autoMSG2Count:  50,				// Messages until post
+		conn:           nil,				// Don't change this
 		quotes:         make(map[string]string),
 		mods:           make(map[string]bool),
 		lastmsg:        0,
@@ -50,6 +51,7 @@ func NewBot() *Bot {
 	}
 }
 
+// Connect the bot to IRC channel
 func (bot *Bot) Connect() {
 	var err error
 	fmt.Printf("Attempting to connect to server...\n")
@@ -62,6 +64,7 @@ func (bot *Bot) Connect() {
 	fmt.Printf("Connected to IRC server %s\n", bot.server)
 }
 
+// Send a bot message
 func (bot *Bot) Message(message string) {
 	if message == "" {
 		return
@@ -75,6 +78,7 @@ func (bot *Bot) Message(message string) {
 	}
 }
 
+// Autopost a timed bot message
 func (bot *Bot) AutoMessage() {
 	for {
 		time.Sleep(time.Duration(bot.autoMSG1Count) * time.Minute)
@@ -82,6 +86,7 @@ func (bot *Bot) AutoMessage() {
 	}
 }
 
+// Read local console input
 func (bot *Bot) ConsoleInput() {
 	reader := bufio.NewReader(os.Stdin)
 	for {
@@ -97,12 +102,13 @@ func (bot *Bot) ConsoleInput() {
 }
 
 func main() {
+	// WTF IS THIS????
 	channel := flag.String("channel", "akasen1226", "Sets the channel for the bot to go into.")
 	nick := flag.String("nickname", "Larke12", "The username of the bot.")
 	autoMSG1 := flag.String("timedmsg", "Welcome!  If you enjoy my stream, please follow!", "Set the automatic timed message.")
-	autoMSG1Count := flag.Int("timedmsgcount", 1, "Set how often the timed message gets displayed.")
+	autoMSG1Count := flag.Int("timedmsgcount", 10, "Set how often the timed message gets displayed.")
 	autoMSG2 := flag.String("linemsg", "Follow me if you really enjoy the stream!  Thank you all!", "Set the automatic line message")
-	autoMSG2Count := flag.Int("linemsgcount", 5, "Set the amount of lines until the line message gets displayed!")
+	autoMSG2Count := flag.Int("linemsgcount", 50, "Set the amount of lines until the line message gets displayed!")
 	userMaxLastMsg := flag.Int("spamtime", 1, "Set a minimum time until the user can talk again(Gets timed out if talks before that).")
 	flag.Parse()
 	fmt.Printf("Twitch IRC Bot made in Go! https://github.com/Vaultpls/Twitch-IRC-Bot\n")
@@ -112,14 +118,17 @@ func main() {
 	ircbot.Connect()
 	messagesCount := 0
 
+	// Obtain Twitch users password, stored locally in plain text
+	// e.g. oauth:<insert oauth>
 	pass1, err := ioutil.ReadFile("twitch_pass.txt")
 	pass := strings.Replace(string(pass1), "\n", "", 0)
+
 	if err != nil {
 		fmt.Println("Error reading from twitch_pass.txt.  Maybe it isn't created?")
 		os.Exit(1)
 	}
 
-	//Prep everything
+	// Prep everything
 	if !ircbot.readSettingsDB(*channel) {
 		ircbot.nick = *nick
 		ircbot.channel = "#" + *channel
@@ -130,12 +139,15 @@ func main() {
 		ircbot.userMaxLastMsg = *userMaxLastMsg
 		ircbot.writeSettingsDB()
 	}
-	//
+
+	// Submit IRC login information
 	fmt.Fprintf(ircbot.conn, "USER %s 8 * :%s\r\n", ircbot.nick, ircbot.nick)
 	fmt.Fprintf(ircbot.conn, "PASS %s\r\n", pass)
 	fmt.Fprintf(ircbot.conn, "NICK %s\r\n", ircbot.nick)
 	fmt.Fprintf(ircbot.conn, "JOIN %s\r\n", ircbot.channel)
+
 	ircbot.readQuoteDB()
+
 	fmt.Printf("Inserted information to server...\n")
 	fmt.Printf("If you don't see the stream chat it probably means the Twitch oAuth password is wrong\n")
 	fmt.Printf("Channel: " + ircbot.channel + "\n")
@@ -144,6 +156,7 @@ func main() {
 	reader := bufio.NewReader(ircbot.conn)
 	tp := textproto.NewReader(reader)
 	go ircbot.ConsoleInput()
+
 	for {
 		line, err := tp.ReadLine()
 		if err != nil {
@@ -170,7 +183,8 @@ func main() {
 		} else if strings.Contains(line, ".tmi.twitch.tv JOIN "+ircbot.channel) {
 			userjoindata := strings.Split(line, ".tmi.twitch.tv JOIN "+ircbot.channel)
 			userjoined := strings.Split(userjoindata[0], "@")
-			fmt.Printf(userjoined[1] + " has joined!\n") //TODO: Database for all people joined and to have it check to see if they have joined.  If not, greet them
+			fmt.Printf(userjoined[1] + " has joined!\n")
+			//TODO: Database for all people joined and to have it check to see if they have joined.  If not, greet them
 		} else if strings.Contains(line, ".tmi.twitch.tv PART "+ircbot.channel) {
 			userjoindata := strings.Split(line, ".tmi.twitch.tv PART "+ircbot.channel)
 			userjoined := strings.Split(userjoindata[0], "@")
@@ -185,5 +199,4 @@ func main() {
 			fmt.Printf(usermod[1] + " isn't a moderator anymore!\n")
 		}
 	}
-
 }
