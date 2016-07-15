@@ -1,4 +1,4 @@
-// db
+// Database Go file
 package main
 
 import (
@@ -10,58 +10,73 @@ import (
 	"strings"
 )
 
+// Get a quote from the local database
 func (bot *Bot) getQuote() string {
 	length := len(bot.quotes)
+
 	if length == 0 {
 		return "No quotes stored!"
 	}
+
 	randomed := rand.Intn(length)
 	tempInt := 1
+
 	for quote, _ := range bot.quotes {
 		if randomed+1 == tempInt {
 			return quote
 		}
 		tempInt++
 	}
+
 	return "Error!"
 }
 
+// Store a new quote in the local database
 func (bot *Bot) writeQuoteDB() {
 	dst, err := os.Create("quotes" + bot.channel + ".ini")
 	defer dst.Close()
+
 	if err != nil {
 		fmt.Println("Can't write to QuoteDB from " + bot.channel)
 		return
 	}
+
 	for split1, split2 := range bot.quotes {
 		fmt.Fprintf(dst, split1+"|"+split2+"\n")
 	}
 }
 
+// Read database and parse quotes
 func (bot *Bot) readQuoteDB() {
 	quotes, err := ioutil.ReadFile("quotes" + bot.channel + ".ini")
+
 	if err != nil {
 		fmt.Println("Unable to read QuoteDB from " + bot.channel)
 		return
 	}
+
 	split1 := strings.Split(string(quotes), "\n")
+
 	for _, splitted1 := range split1 {
 		if strings.Contains(splitted1, "|") {
 			split2 := strings.Split(splitted1, "|")
 			bot.quotes[split2[0]] = split2[1]
 		}
 	}
-
 }
 
+// Read the settings for the bot 
 func (bot *Bot) readSettingsDB(channel string) bool {
 	settings, err := ioutil.ReadFile("settings#" + channel + ".ini")
 	bot.channel = "#" + channel
+
 	if err != nil {
 		fmt.Println("Unable to read SettingsDB from " + channel)
 		return false
 	}
+
 	split1 := strings.Split(string(settings), "\n")
+
 	for _, splitted1 := range split1 {
 		split2 := strings.Split(splitted1, "|")
 		if split2[0] == "nickname" {
@@ -79,14 +94,13 @@ func (bot *Bot) readSettingsDB(channel string) bool {
 		} else if split2[0] == "userspamcount" {
 			temp, _ := strconv.Atoi(split2[1])
 			bot.userMaxLastMsg = temp
-		} else if split2[0] == "lastfm" {
-			bot.lastfm = split2[1]
 		}
-
 	}
+
 	return true
 }
 
+// Write the settings file for the bot
 func (bot *Bot) writeSettingsDB() {
 	dst, err := os.Create("settings" + bot.channel + ".ini")
 	defer dst.Close()
@@ -100,5 +114,4 @@ func (bot *Bot) writeSettingsDB() {
 	fmt.Fprintf(dst, "timemsgminutes|"+strconv.Itoa(bot.autoMSG1Count)+"\n")
 	fmt.Fprintf(dst, "linemsgcount|"+strconv.Itoa(bot.autoMSG2Count)+"\n")
 	fmt.Fprintf(dst, "userspamcount|"+strconv.Itoa(bot.userMaxLastMsg)+"\n")
-	fmt.Fprintf(dst, "lastfm|"+bot.lastfm+"\n")
 }

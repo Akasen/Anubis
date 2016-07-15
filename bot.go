@@ -28,7 +28,6 @@ type Bot struct {
 	lastmsg        int64
 	maxMsgTime     int64
 	userMaxLastMsg int
-	lastfm         string
 }
 
 func NewBot() *Bot {
@@ -48,7 +47,6 @@ func NewBot() *Bot {
 		maxMsgTime:     5,
 		userLastMsg:    make(map[string]int64),
 		userMaxLastMsg: 2,
-		lastfm:         "", //"NExTliFE_",
 	}
 }
 
@@ -106,7 +104,6 @@ func main() {
 	autoMSG2 := flag.String("linemsg", "Follow me if you really enjoy the stream!  Thank you all!", "Set the automatic line message")
 	autoMSG2Count := flag.Int("linemsgcount", 5, "Set the amount of lines until the line message gets displayed!")
 	userMaxLastMsg := flag.Int("spamtime", 1, "Set a minimum time until the user can talk again(Gets timed out if talks before that).")
-	lastfm := flag.String("lastfm", "", "Set your Last.FM username to track your songs.")
 	flag.Parse()
 	fmt.Printf("Twitch IRC Bot made in Go! https://github.com/Vaultpls/Twitch-IRC-Bot\n")
 
@@ -131,7 +128,6 @@ func main() {
 		ircbot.autoMSG2 = *autoMSG2
 		ircbot.autoMSG2Count = *autoMSG2Count
 		ircbot.userMaxLastMsg = *userMaxLastMsg
-		ircbot.lastfm = *lastfm
 		ircbot.writeSettingsDB()
 	}
 	//
