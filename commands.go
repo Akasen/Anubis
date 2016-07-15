@@ -24,7 +24,7 @@ func (bot *Bot) CmdInterpreter(username string, usermessage string) {
 	}
 
 	if strings.HasPrefix(message, "!help") {
-		bot.Message("For help, please make the bot.")
+		bot.Message("For help, please make the bot. dreaSMUG")
 	} else if strings.HasPrefix(message, "!quote") {
 		bot.Message(bot.getQuote())
 	} else if strings.HasPrefix(message, "!addquote ") {
