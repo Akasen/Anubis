@@ -2,6 +2,7 @@
 *.txt
 *.exe
 *.ini
+Anubis
 
 # Windows image file caches
 Thumbs.db
