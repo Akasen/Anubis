@@ -168,6 +168,7 @@ func main() {
 	fmt.Fprintf(ircbot.conn, "NICK %s\r\n", ircbot.nick)
 	fmt.Fprintf(ircbot.conn, "JOIN %s\r\n", ircbot.channel)
 
+	// Check database for existing quotes
 	ircbot.readQuoteDB()
 
 	fmt.Printf("Inserted information to server...\n")
@@ -179,6 +180,7 @@ func main() {
 	tp := textproto.NewReader(reader)
 	go ircbot.ConsoleInput()
 
+	// Loop for chat
 	for {
 		line, err := tp.ReadLine()
 		if err != nil {
