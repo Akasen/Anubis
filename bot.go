@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// Main Bot Go file
+// Main Bot Go file, edited from Vaultpls/Twitch-IRC-Bot
 package main
 
 import (
@@ -56,6 +56,7 @@ func NewBot() *Bot {
 	return &Bot{
 		server:         "irc.chat.twitch.tv",
 		port:           "80",
+		// TODO: Have the following information editable via the GUI
 		nick:           "Larke12",			// Change to your Twitch username
 		channel:        "#akasen1226",			// Change to your channel
 		autoMSG1:       "Please follow if you like the stream!  Type !help to see my commands",
@@ -123,7 +124,7 @@ func (bot *Bot) ConsoleInput() {
 }
 
 func main() {
-	// WTF IS THIS????
+	// These are required if your settings#channel.ini file is not populated
 	channel := flag.String("channel", "akasen1226", "Sets the channel for the bot to go into.")
 	nick := flag.String("nickname", "Larke12", "The username of the bot.")
 	autoMSG1 := flag.String("timedmsg", "Welcome!  If you enjoy my stream, please follow!", "Set the automatic timed message.")
@@ -132,7 +133,6 @@ func main() {
 	autoMSG2Count := flag.Int("linemsgcount", 50, "Set the amount of lines until the line message gets displayed!")
 	userMaxLastMsg := flag.Int("spamtime", 1, "Set a minimum time until the user can talk again(Gets timed out if talks before that).")
 	flag.Parse()
-	fmt.Printf("Twitch IRC Bot made in Go! https://github.com/Vaultpls/Twitch-IRC-Bot\n")
 
 	ircbot := NewBot()
 	go ircbot.ConsoleInput()
@@ -151,6 +151,7 @@ func main() {
 
 	// Prep everything
 	if !ircbot.readSettingsDB(*channel) {
+		//fmt.Println("Error reading from settings file. Maybe it isn't created yet?")
 		ircbot.nick = *nick
 		ircbot.channel = "#" + *channel
 		ircbot.autoMSG1 = *autoMSG1
