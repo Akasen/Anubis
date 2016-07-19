@@ -22,9 +22,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"reflect"
 	"strings"
 	"time"
 )
@@ -80,13 +82,19 @@ func (bot *Bot) CmdInterpreter(username string, usermessage string) {
 		} else {
 			bot.Message(username + " you are not a mod!")
 		}
+	} else if strings.HasPrefix(message, "!uptime") {
+		uptime := bot.getUptime(bot.channel)
+		bot.Message(uptime)
 	} else if message == "!time" {
 		temp := time.Now()
 		bot.Message(temp.String())
+	} else if message == "!welcome" {
+		bot.Message("Hi! Welcome to the stream, friend!")
 	}
 }
 
 // Begin website section 
+
 func webTitle(website string) string {
 	response, err := http.Get(website)
 	if err != nil {
@@ -118,7 +126,53 @@ func isWebsite(website string) bool {
 
 // End website section 
 
+// Begin Twitch API section
+
+func (bot *Bot) getUptime(username string) string {
+
+	// Passed channel as username
+	url := "https://api.twitch.tv/kraken/streams/" + username
+	resp, err := http.Get(url)
+	if err != nil {
+		fmt.Print(err)
+
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	var f interface{}
+	err = json.Unmarshal(body, &f)
+	if err != nil {
+		fmt.Println(err)
+		return err.Error()
+	}
+
+	m := f.(map[string]interface{})
+
+	// Better way to check for null?
+	if stream, ok := m["stream"]; ok {
+		streamMap := stream.(map[string]interface{})
+		created_at := reflect.ValueOf(streamMap["created_at"]).String()
+		fmt.Println(created_at)
+
+		t, err := time.Parse("2006-01-02T15:04:05Z07:00", created_at)
+		fmt.Println(t, err)
+		fmt.Println(time.Since(t))
+		str := time.Since(t).String()
+		hours := str[0:strings.Index(str, "h")]
+		mins := str[strings.Index(str, "h")+1 : strings.Index(str, "m")]
+		fmt.Println(hours, mins)
+
+		return "Stream has been up for " + hours + " hours and " + mins + " mins."
+	} else {
+		return "Stream is not online."
+	}
+}
+
+// End Twitch API section
+
 // Begin mod section
+
 func (bot *Bot) isMod(username string) bool {
 	temp := strings.Replace(bot.channel, "#", "", 1)
 	if bot.mods[username] == true || temp == username { 
@@ -146,3 +200,4 @@ func (bot *Bot) ban(username string, reason string) {
 }
 
 // End mod section 
+

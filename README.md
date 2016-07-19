@@ -2,7 +2,7 @@
 
 A custom IRC bot for use on [Twitch.tv](https://www.twitch.tv/). Planned to be a replacement for Moobot's and Nightbot's around the world.
 
-Built using Go, with skeleton code based from [Vaultpls's Bot](https://github.com/Vaultpls/Twitch-IRC-Bot).
+Built using Go, with skeleton code based from [Vaultpls's Bot](https://github.com/Vaultpls/Twitch-IRC-Bot) and some minor code from [Makoz's fork](https://github.com/Makoz/Twitch-IRC-Bot).
 
 ## Planned Features
  * Custom commands

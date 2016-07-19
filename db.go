@@ -135,3 +135,4 @@ func (bot *Bot) writeSettingsDB() {
 	fmt.Fprintf(dst, "linemsgcount|"+strconv.Itoa(bot.autoMSG2Count)+"\n")
 	fmt.Fprintf(dst, "userspamcount|"+strconv.Itoa(bot.userMaxLastMsg)+"\n")
 }
+
