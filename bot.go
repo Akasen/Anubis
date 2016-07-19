@@ -127,9 +127,9 @@ func main() {
 	// These are required if your settings#channel.ini file is not populated
 	channel := flag.String("channel", "akasen1226", "Sets the channel for the bot to go into.")
 	nick := flag.String("nickname", "Larke12", "The username of the bot.")
-	autoMSG1 := flag.String("timedmsg", "Welcome!  If you enjoy my stream, please follow!", "Set the automatic timed message.")
+	autoMSG1 := flag.String("timedmsg", "Welcome!  If you enjoy the stream, please follow!", "Set the automatic timed message.")
 	autoMSG1Count := flag.Int("timedmsgcount", 10, "Set how often the timed message gets displayed.")
-	autoMSG2 := flag.String("linemsg", "Follow me if you really enjoy the stream!  Thank you all!", "Set the automatic line message")
+	autoMSG2 := flag.String("linemsg", "Follow if you really enjoy the stream!  Thank you all!", "Set the automatic line message")
 	autoMSG2Count := flag.Int("linemsgcount", 50, "Set the amount of lines until the line message gets displayed!")
 	userMaxLastMsg := flag.Int("spamtime", 1, "Set a minimum time until the user can talk again(Gets timed out if talks before that).")
 	flag.Parse()

@@ -90,6 +90,8 @@ func (bot *Bot) CmdInterpreter(username string, usermessage string) {
 		bot.Message(temp.String())
 	} else if message == "!welcome" {
 		bot.Message("Hi! Welcome to the stream, friend!")
+	} else if message == "!whereami" {
+		bot.Message("I am in " + bot.channel)
 	}
 }
 
@@ -148,6 +150,9 @@ func (bot *Bot) getUptime(username string) string {
 	}
 
 	m := f.(map[string]interface{})
+
+	fmt.Println(m)
+	fmt.Println(m["stream"])
 
 	// Better way to check for null?
 	if stream, ok := m["stream"]; ok {
