@@ -91,7 +91,7 @@ func (bot *Bot) CmdInterpreter(username string, usermessage string) {
 	} else if message == "!welcome" {
 		bot.Message("Hi! Welcome to the stream, friend!")
 	} else if message == "!whereami" {
-		bot.Message("I am in " + bot.channel)
+		bot.Message("I am at " + bot.channel)
 	}
 }
 
