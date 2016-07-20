@@ -133,7 +133,8 @@ func isWebsite(website string) bool {
 func (bot *Bot) getUptime(username string) string {
 
 	// Passed channel as username
-	url := "https://api.twitch.tv/kraken/streams/" + username
+	channel := strings.TrimPrefix(username, "#")
+	url := "https://api.twitch.tv/kraken/streams/" + channel 
 	resp, err := http.Get(url)
 	if err != nil {
 		fmt.Print(err)
@@ -151,9 +152,6 @@ func (bot *Bot) getUptime(username string) string {
 
 	m := f.(map[string]interface{})
 
-	fmt.Println(m)
-	fmt.Println(m["stream"])
-
 	// Better way to check for null?
 	if stream, ok := m["stream"]; ok {
 		streamMap := stream.(map[string]interface{})
@@ -170,7 +168,7 @@ func (bot *Bot) getUptime(username string) string {
 
 		return "Stream has been up for " + hours + " hours and " + mins + " mins."
 	} else {
-		return "Stream is not online."
+		return "Stream is offline."
 	}
 }
 

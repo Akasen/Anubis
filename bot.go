@@ -125,7 +125,7 @@ func (bot *Bot) ConsoleInput() {
 
 func main() {
 	// These are required if your settings#channel.ini file is not populated
-	channel := flag.String("channel", "akasen1226", "Sets the channel for the bot to go into.")
+	channel := flag.String("channel", "larke12", "Sets the channel for the bot to go into.")
 	nick := flag.String("nickname", "Larke12", "The username of the bot.")
 	autoMSG1 := flag.String("timedmsg", "Welcome!  If you enjoy the stream, please follow!", "Set the automatic timed message.")
 	autoMSG1Count := flag.Int("timedmsgcount", 10, "Set how often the timed message gets displayed.")
