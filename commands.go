@@ -134,7 +134,7 @@ func (bot *Bot) getUptime(username string) string {
 
 	// Passed channel as username
 	channel := strings.TrimPrefix(username, "#")
-	url := "https://api.twitch.tv/kraken/streams/" + channel 
+	url := "https://api.twitch.tv/kraken/streams/" + channel
 	resp, err := http.Get(url)
 	if err != nil {
 		fmt.Print(err)
@@ -156,15 +156,22 @@ func (bot *Bot) getUptime(username string) string {
 	if stream, ok := m["stream"]; ok {
 		streamMap := stream.(map[string]interface{})
 		created_at := reflect.ValueOf(streamMap["created_at"]).String()
-		fmt.Println(created_at)
+		fmt.Println("Created at: " + created_at)
 
 		t, err := time.Parse("2006-01-02T15:04:05Z07:00", created_at)
 		fmt.Println(t, err)
 		fmt.Println(time.Since(t))
 		str := time.Since(t).String()
-		hours := str[0:strings.Index(str, "h")]
+
+		// Check for hours, because they may not exist (yet)
+		hours := ""
+		if  strings.Contains(str, "h") {
+			hours = str[0:strings.Index(str, "h")] 
+		} else {
+			hours = "0"
+		}
+
 		mins := str[strings.Index(str, "h")+1 : strings.Index(str, "m")]
-		fmt.Println(hours, mins)
 
 		return "Stream has been up for " + hours + " hours and " + mins + " mins."
 	} else {
